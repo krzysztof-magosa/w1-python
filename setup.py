@@ -1,0 +1,20 @@
+#!/usr/bin/env python
+
+import pip.download
+from pip.req import parse_requirements
+from setuptools import setup
+
+setup(
+    name='w1',
+    version='0.1.0',
+    description='Python wrapper for 1-wire Linux interface',
+    url='https://github.com/krzysztof-magosa/w1-python',
+    author='Krzysztof Magosa',
+    author_email='krzysztof@magosa.pl',
+    license='MIT',
+    packages=[
+        'w1'
+    ],
+    scripts=[],
+    install_requires=[]
+)
