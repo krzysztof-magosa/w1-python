@@ -15,6 +15,8 @@ setup(
     packages=[
         'w1'
     ],
-    scripts=[],
+    scripts=[
+        "bin/w1-therm"
+    ],
     install_requires=[]
 )
