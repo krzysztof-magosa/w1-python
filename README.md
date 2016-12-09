@@ -7,6 +7,6 @@ from w1 import Manager
 from w1 import Family
 
 manager = Manager()
-for slave in manager.slaves(family=Family.THERMAL):
+for slave in manager.slaves(family=Family.THERM):
     print(slave.temperature)
 ```

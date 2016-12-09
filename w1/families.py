@@ -1,1 +1,1 @@
-THERMAL = "28"
+THERM = "28"

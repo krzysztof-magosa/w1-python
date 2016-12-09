@@ -1,14 +1,14 @@
 import os
 import glob
 from w1.master import Master
-from w1.thermal import Thermal
+from w1.therm import Therm
 from w1 import consts as C
 from w1 import families as Family
 
 class Manager(object):
     def __init__(self):
         self.drivers = dict()
-        self.register_driver(Family.THERMAL, Thermal)
+        self.register_driver(Family.THERM, Therm)
 
     def masters(self):
         for path in glob.iglob("{}/{}".format(C.DEVICES_PATH, "w1_bus_master*")):

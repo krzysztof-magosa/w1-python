@@ -3,7 +3,7 @@ import re
 import glob
 from w1.slave import Slave
 
-class Thermal(Slave):
+class Therm(Slave):
     @property
     def temperature(self):
         data = self._read("w1_slave")
