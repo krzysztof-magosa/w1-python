@@ -14,3 +14,15 @@ class Therm(Slave):
 
         match = re.search("t=(\d+)", data)
         return int(match.group(1)) / 1000.0
+
+    @property
+    def celsius(self):
+        return self.temperature
+
+    @property
+    def kelvin(self):
+        return self.celsius + 273.15
+
+    @property
+    def fahrenheit(self):
+        return self.celsius * 1.8 + 32
