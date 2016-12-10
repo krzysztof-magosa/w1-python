@@ -29,7 +29,7 @@ class Manager(object):
         else:
             return Slave
 
-    def slaves(self, family=None):
+    def slaves(self, family=None, names=None):
         for master in self.masters():
-            for slave in master.slaves(family=family):
+            for slave in master.slaves(family=family, names=names):
                 yield slave

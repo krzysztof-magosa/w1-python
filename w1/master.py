@@ -16,11 +16,14 @@ class Master(Device):
     def slave_names(self):
         return self._read("w1_master_slaves").strip().split("\n")
 
-    def slaves(self, family=None):
+    def slaves(self, family=None, names=None):
         for name in self.slave_names:
             slave_family = name.split("-")[0]
 
             if family and str(family) != slave_family:
+                continue
+
+            if names and name not in names:
                 continue
 
             yield self.manager.get_driver(slave_family)(
