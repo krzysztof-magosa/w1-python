@@ -1,0 +1,70 @@
+#!/usr/bin/env python
+
+import json
+import time
+import argparse
+import threading
+import BaseHTTPServer
+
+from w1 import Manager
+from w1 import Family
+
+class SensorsThread(threading.Thread):
+    def __init__(self):
+        super(SensorsThread, self).__init__()
+        self._terminate = False
+        self.result = []
+
+    def run(self):
+        while(not self._terminate):
+            temp = []
+            for slave in Manager().slaves(family=Family.THERM):
+                temp.append(
+                    dict(
+                        name=slave.name,
+                        family=slave.family,
+                        serial=slave.serial,
+                        celsius=slave.celsius,
+                        kelvin=slave.kelvin,
+                        fahrenheit=slave.fahrenheit
+                    )
+                )
+
+            self.result = temp
+            time.sleep(1)
+
+    def terminate(self):
+        self._terminate = True
+        self.join()
+
+
+class ApiHandler(BaseHTTPServer.BaseHTTPRequestHandler):
+    def do_GET(s):
+        if s.path == "/sensors":
+            s.send_response(200)
+            s.send_header("Content-Type", "application/json")
+            s.end_headers()
+            s.wfile.write(json.dumps(sensors_thread.result))
+        else:
+            s.send_response(404)
+            s.send_header("Content-Type", "text/plain")
+            s.end_headers()
+            s.wfile.write("404")
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--port", type=int, default=8080, help="Port to listen on")
+    parser.add_argument("--ip", default="0.0.0.0", help="IP to listen on")
+    args = parser.parse_args()
+
+    sensors_thread = SensorsThread()
+    httpd = BaseHTTPServer.HTTPServer((args.ip, args.port), ApiHandler)
+
+    try:
+        sensors_thread.start()
+        httpd.serve_forever()
+    except KeyboardInterrupt:
+        pass
+
+    sensors_thread.terminate()
+    httpd.server_close()

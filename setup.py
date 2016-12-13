@@ -16,7 +16,8 @@ setup(
         'w1'
     ],
     scripts=[
-        "bin/w1-therm"
+        "bin/w1-therm",
+        "bin/w1-api"
     ],
     install_requires=[]
 )
