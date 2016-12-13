@@ -6,7 +6,7 @@ from setuptools import setup
 
 setup(
     name='w1',
-    version='0.2.0',
+    version='0.3.0',
     description='Python wrapper for 1-wire Linux interface',
     url='https://github.com/krzysztof-magosa/w1-python',
     author='Krzysztof Magosa',
