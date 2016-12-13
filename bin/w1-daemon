@@ -1,0 +1,73 @@
+#!/usr/bin/env python
+
+import json
+import time
+import threading
+import BaseHTTPServer
+
+from w1 import Manager
+from w1 import Family
+
+HOST_NAME = '0.0.0.0'
+PORT_NUMBER = 8080
+
+
+class SensorsThread(threading.Thread):
+    def __init__(self):
+        super(SensorsThread, self).__init__()
+        self._terminate = False
+        self.result = []
+
+    def run(self):
+        while(not self._terminate):
+            temp = []
+            for slave in Manager().slaves(family=Family.THERM):
+                temp.append(
+                    dict(
+                        name=slave.name,
+                        family=slave.family,
+                        serial=slave.serial,
+                        celsius=slave.celsius,
+                        kelvin=slave.kelvin,
+                        fahrenheit=slave.fahrenheit
+                    )
+                )
+
+            self.result = temp
+            time.sleep(1)
+
+    def terminate(self):
+        self._terminate = True
+        self.join()
+
+
+class ApiHandler(BaseHTTPServer.BaseHTTPRequestHandler):
+    def do_GET(s):
+        if s.path == "/sensors":
+            s.send_response(200)
+            s.send_header("Content-Type", "application/json")
+            s.end_headers()
+            s.wfile.write(json.dumps(sensors_thread.result))
+        else:
+            s.send_response(404)
+            s.send_header("Content-Type", "application/json")
+            s.end_headers()
+            s.wfile.write(
+                json.dumps(
+                    dict(error="API endpoint not found.")
+                )
+            )
+
+sensors_thread = SensorsThread()
+sensors_thread.start()
+
+if __name__ == "__main__":
+    httpd = BaseHTTPServer.HTTPServer((HOST_NAME, PORT_NUMBER), ApiHandler)
+
+    try:
+        httpd.serve_forever()
+    except KeyboardInterrupt:
+        pass
+
+    sensors_thread.terminate()
+    httpd.server_close()
