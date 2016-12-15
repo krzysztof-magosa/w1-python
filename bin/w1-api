@@ -43,6 +43,7 @@ class ApiHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         if s.path == "/sensors":
             s.send_response(200)
             s.send_header("Content-Type", "application/json")
+            s.send_header("Access-Control-Allow-Origin", "*")
             s.end_headers()
             s.wfile.write(json.dumps(sensors_thread.result))
         else:
