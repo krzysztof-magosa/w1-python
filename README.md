@@ -59,3 +59,41 @@ km@raspberrypi:~$ w1-therm --name 28-000006762567 --only-value --as-integer --un
 km@raspberrypi:~$ w1-therm --name 28-000006762567 --only-value --as-integer --unit fahrenheit
 82
 ```
+
+### w1-api
+Simple HTTP server providing sensors values in JSON format.
+At the moment only thermal sensors are supported.
+Sensors are queried in separate thread every 1 second.
+The api endpoint is `/sensors`.
+
+Default settings, listen on 0.0.0.0:8080:
+```
+km@raspberrypi:~$ w1-api
+```
+
+Custom port and IP:
+```
+km@raspberrypi:~$ w1-api --port 1234 --ip 127.0.0.1
+```
+
+Example output:
+```
+[
+    {
+        "celsius": 61.25,
+        "fahrenheit": 142.3616,
+        "family": "28",
+        "kelvin": 334.4,
+        "name": "28-00000675de87",
+        "serial": "00000675de87"
+    },
+    {
+        "celsius": 24.937,
+        "fahrenheit": 77.0,
+        "family": "28",
+        "kelvin": 298.15,
+        "name": "28-000006762567",
+        "serial": "000006762567"
+    }
+]
+```
